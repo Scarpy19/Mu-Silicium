@@ -1,21 +1,23 @@
 [submodule "Binaries"]
 	path = Binaries
-	url = https://github.com/Project-Silicium/Device-Binaries.git
+	url = https://github.com/Scarpy19/Device-Binaries.git
+	branch = garnet-windows
 [submodule "Common/Mu"]
 	path = Common/Mu
-	url = https://github.com/microsoft/mu_plus.git
-	branch = release/202608
+	url = https://github.com/Scarpy19/mu_plus.git
+	branch = garnet-windows
 [submodule "Common/Mu_OEM_Sample"]
 	path = Common/Mu_OEM_Sample
 	url = https://github.com/microsoft/mu_oem_sample.git
 	branch = release/202608
 [submodule "Mu_Basecore"]
 	path = Mu_Basecore
-	url = https://github.com/microsoft/mu_basecore.git
-	branch = release/202608
+	url = https://github.com/Scarpy19/mu_basecore.git
+	branch = garnet-windows
 [submodule "Silicium-ACPI"]
 	path = Silicium-ACPI
-	url = https://github.com/Project-Silicium/Silicium-ACPI.git
+	url = https://github.com/Scarpy19/Silicium-ACPI.git
+	branch = garnet-windows
 [submodule "Silicon/Silicium/OpensslPkg/Library/OpensslLib/openssl"]
 	path = Silicon/Silicium/OpensslPkg/Library/OpensslLib/openssl
 	url = https://github.com/openssl/openssl.git
