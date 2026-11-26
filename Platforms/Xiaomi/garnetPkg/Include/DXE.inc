@@ -42,7 +42,6 @@
   INF FatPkg/EnhancedFatDxe/Fat.inf
   INF MdeModulePkg/Universal/Disk/UnicodeCollation/EnglishDxe/EnglishDxe.inf
 
-  INF Binaries/garnet/QcomPkg/Drivers/UFSDxe/UFSDxe.inf
   INF Binaries/garnet/QcomPkg/Drivers/CmdDbDxe/CmdDbDxe.inf
   INF Binaries/garnet/QcomPkg/Drivers/PwrUtilsDxe/PwrUtilsDxe.inf
   INF Binaries/garnet/QcomPkg/Drivers/RpmhDxe/RpmhDxe.inf
@@ -65,7 +64,6 @@
 !endif
   INF Binaries/garnet/QcomPkg/Drivers/GpiDxe/GpiDxe.inf
   INF Binaries/garnet/QcomPkg/Drivers/SPIDxe/SPIDxe.inf
-  INF Binaries/garnet/QcomPkg/Drivers/SdccDxe/SdccDxe.inf
   INF Binaries/garnet/QcomPkg/Drivers/FeatureEnablerDxe/FeatureEnablerDxe.inf
 
 !if $(USE_CUSTOM_DISPLAY_DRIVER) == 1
