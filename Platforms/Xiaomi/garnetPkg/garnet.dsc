@@ -35,6 +35,15 @@
 
 [PcdsFixedAtBuild]
   #
+  # Screen verbosity; keeps [KEP] warnings visible
+  #
+  gEfiMdePkgTokenSpaceGuid.PcdDebugPrintErrorLevel|0x80000002
+
+  # Load large EFI applications (bootmgfw.efi) at any address via
+  # AllocateAnyPages, because address 0x10000000 has no physical RAM on garnet.
+  gEfiMdeModulePkgTokenSpaceGuid.PcdImageLargeAddressLoad|TRUE
+
+  #
   # DDR Memory
   #
   gArmTokenSpaceGuid.PcdSystemMemoryBase|0x80000000
