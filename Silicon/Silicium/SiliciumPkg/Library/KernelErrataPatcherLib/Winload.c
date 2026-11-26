@@ -14,6 +14,7 @@
 #include <Library/AssemblyUtilsLib.h>
 #include <Library/BaseLib.h>
 
+#include "KernelErrataPatcherLib.h"
 #include "Winload.h"
 
 //
@@ -168,14 +169,16 @@ IsWinloadMemory (
   return FALSE;
 }
 
-VOID
+EFI_STATUS
 PatchWinloadTransferToKernel (
   IN UINT8 *ShellCode,
   IN UINTN  ShellCodeSize)
 {
+  EFI_STATUS Status;
+
   // Verify Winload Memory Range
   if (mWinloadBase == 0 || mWinloadEnd == 0) {
-    return;
+    return EFI_NOT_READY;
   }
 
   // Go thru each Codebase Semester
@@ -197,7 +200,14 @@ PatchWinloadTransferToKernel (
       }
 
       // Show Detected Codebase Semester
-      DEBUG ((EFI_D_WARN, "[WINLOAD] Detected Codebase Semester = %a\n", CodebaseSemester[i].Name));
+      DEBUG ((EFI_D_WARN, "[KEP] Detected Codebase Semester = %a\n", CodebaseSemester[i].Name));
+
+      // The shellcode can occupy PE header padding before .text.
+      Status = SetMemoryProtection (NewTransferToKernelAddr, ShellCodeSize, FALSE);
+      if (EFI_ERROR (Status)) {
+        DEBUG ((EFI_D_ERROR, "[KEP] Failed to Unprotect Shell Code Range! Status = %r\n", Status));
+        return Status;
+      }
 
       // Inject Shell Code
       CopyMem ((VOID *)NewTransferToKernelAddr, (CONST VOID *)ShellCode, ShellCodeSize);
@@ -211,13 +221,20 @@ PatchWinloadTransferToKernel (
       WriteBackInvalidateDataCacheRange ((VOID *)Current, ARM64_INSTRUCTION_LENGTH);
       InvalidateInstructionCacheRange   ((VOID *)Current, ARM64_INSTRUCTION_LENGTH);
 
+      Status = SetMemoryProtection (NewTransferToKernelAddr, ShellCodeSize, TRUE);
+      if (EFI_ERROR (Status)) {
+        DEBUG ((EFI_D_ERROR, "[KEP] Failed to Reprotect Shell Code Range! Status = %r\n", Status));
+        return Status;
+      }
+
       // Show Progress
-      DEBUG ((EFI_D_WARN, "[WINLOAD] Injected Shell Code at 0x%p\n",        NewTransferToKernelAddr));
-      DEBUG ((EFI_D_WARN, "[WINLOAD] Patched Branch Instruction at 0x%p\n", Current));
-      return;
+      DEBUG ((EFI_D_WARN, "[KEP] Injected Shell Code at 0x%p\n",        NewTransferToKernelAddr));
+      DEBUG ((EFI_D_WARN, "[KEP] Patched Branch Instruction at 0x%p\n", Current));
+      return EFI_SUCCESS;
     }
   }
 
   // Show Failure
-  DEBUG ((EFI_D_ERROR, "[WINLOAD] Failed to Detect Codebase Semester!\n"));
+  DEBUG ((EFI_D_ERROR, "[KEP] Failed to Detect Codebase Semester!\n"));
+  return EFI_NOT_FOUND;
 }

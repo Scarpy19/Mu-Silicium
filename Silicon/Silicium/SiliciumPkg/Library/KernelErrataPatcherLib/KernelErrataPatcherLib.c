@@ -97,6 +97,7 @@ KepAllocatePagesHook (
 
   // Apply Platform Specific Patches
   ApplyPlatformErrataPatches (mWinloadBase, mWinloadEnd);
+  DEBUG ((EFI_D_WARN, "[KEP] Winload ACTLR_EL1 scan complete\n"));
 
   // Reprotect Winload .text Section
   Status = SetWinloadProtection (TRUE);
@@ -143,7 +144,10 @@ KepExitBootServicesHook (
   }
 
   // Patch Transfer to Kernel
-  PatchWinloadTransferToKernel (ShellCode, ShellCodeSize);
+  Status = PatchWinloadTransferToKernel (ShellCode, ShellCodeSize);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((EFI_D_ERROR, "[KEP] Shellcode injection failed! Status = %r\n", Status));
+  }
 
   // Reprotect Winload .text Section
   Status = SetWinloadProtection (TRUE);
@@ -173,6 +177,7 @@ ReadyToBootHandler (
   // Calculate new CRC32
   gBS->Hdr.CRC32 = 0;
   gBS->CalculateCrc32 (gBS, sizeof (EFI_BOOT_SERVICES), &gBS->Hdr.CRC32);
+  DEBUG ((EFI_D_WARN, "[KEP] ReadyToBoot hooks installed\n"));
 
   // Close Event
   gBS->CloseEvent (Event);
@@ -190,7 +195,7 @@ KernelErrataPatcherLibConstructor (
   // Create Ready To Boot Event
   Status = gBS->CreateEventEx (EVT_NOTIFY_SIGNAL, TPL_CALLBACK, ReadyToBootHandler, NULL, &gEfiEventReadyToBootGuid, &ReadyToBootEvent);
   if (EFI_ERROR (Status)) {
-    DEBUG ((EFI_D_ERROR, "%a: Failed to Create Ready To Boot Event! Status = %r\n", __FUNCTION__, Status));
+    DEBUG ((EFI_D_ERROR, "[KEP] Failed to Create Ready To Boot Event! Status = %r\n", Status));
     return EFI_SUCCESS;
   }
 

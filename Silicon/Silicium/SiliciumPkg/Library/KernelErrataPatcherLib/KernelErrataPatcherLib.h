@@ -31,7 +31,14 @@ IsWinloadMemory (
 EFI_STATUS
 SetWinloadProtection (IN BOOLEAN Enable);
 
-VOID
+EFI_STATUS
+SetMemoryProtection (
+  IN EFI_PHYSICAL_ADDRESS Base,
+  IN UINTN                Length,
+  IN BOOLEAN              Enable
+  );
+
+EFI_STATUS
 PatchWinloadTransferToKernel (
   IN UINT8 *ShellCode,
   IN UINTN  ShellCodeSize
