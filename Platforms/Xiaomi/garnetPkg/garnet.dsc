@@ -81,4 +81,4 @@
   #
   # ACPI Tables
   #
-  #garnet/AcpiTables.inf
+  garnet/AcpiTables.inf
